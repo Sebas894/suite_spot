@@ -23,6 +23,7 @@ class SuiteSpotApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Suite Spot',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -45,17 +46,36 @@ class _LoginPageState extends State<LoginPage> {
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: CachedNetworkImageProvider(
-              'https://invisionstudio.com/wp-content/uploads/2015/06/Hotels-360-Tours-Property-Photography-Architecural-Photography-Hotel-Photography.jpg',
-            ),
+            image: AssetImage('images/loginBG.png'),
             fit: BoxFit.cover,
           ),
         ),
         child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
+
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Welcome Text outside of the form container
+              Text(
+                'Welcome to Suite Spot',
+                style: TextStyle(
+                  fontFamily: 'Italiana-Regular',
+                  fontSize: 45,
+                  color: Color.fromRGBO(232, 204, 191, 1),
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20), 
+
+          ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: 400, // Fixed width for the form
+              maxHeight: 500, // Fixed height for the form
+            ),
             child: Card(
               elevation: 8.0,
+              color: Color.fromRGBO(232, 204, 191, 0.75),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
@@ -68,8 +88,10 @@ class _LoginPageState extends State<LoginPage> {
                   },
                   child: isRegistering ? _buildRegistrationForm() : _buildLoginForm(),
                 ),
+              ), 
+                ),
               ),
-            ),
+            ],
           ),
         ),
       ),
@@ -82,10 +104,12 @@ class _LoginPageState extends State<LoginPage> {
       mainAxisSize: MainAxisSize.min,
       children: [
         const Text(
-          'Welcome to Suite Spot',
+          'Log In',
           style: TextStyle(
+            fontFamily: 'Italiana-Regular',
             fontSize: 24,
             fontWeight: FontWeight.bold,
+            color: Colors.black,
           ),
         ),
         const SizedBox(height: 20),
@@ -144,7 +168,9 @@ class _LoginPageState extends State<LoginPage> {
         const Text(
           'Register an Account',
           style: TextStyle(
+            fontFamily: 'Italiana-Regular',
             fontSize: 24,
+            color: Colors.black,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -184,7 +210,12 @@ class _LoginPageState extends State<LoginPage> {
         const SizedBox(height: 20),
         ElevatedButton(
           onPressed: () {
-            // Add registration logic here
+            // Add logic to send new account details to the database
+            // Assuming the registration is successful, navigate to the HomePage
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => HomePage()),
+            );
           },
           child: const Text('Register'),
           style: ElevatedButton.styleFrom(

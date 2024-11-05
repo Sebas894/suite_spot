@@ -9,6 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  intl: ^0.17.0
   firebase_core:
 
   cached_network_image: ^3.2.3
@@ -20,3 +21,11 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/fonts/
+    - assets/images/
+
+  fonts:
+    - family: Italiana-Regular
+      fonts:
+        - asset: assets/fonts/Italiana-Regular.ttf
