@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:suite_spot/bookingProcessPage.dart';
 import 'homePage.dart';
 
 class SearchResultsPage extends StatefulWidget {
@@ -187,7 +188,6 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                   ),
                   SizedBox(height: 20),
 
-
                   Text('Property Type', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   SizedBox(height: 10),
                 ],
@@ -204,7 +204,6 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                   // Search Input Section
                   Row(
                     children: [
-
                       // Location input
                       Expanded(
                         child: TextField(
@@ -216,52 +215,47 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                       ),
                       SizedBox(width: 10),
 
+                      // Check-In Date Picker
+                      Flexible(
+                        child: GestureDetector(
+                          onTap: () => _selectDate(context, true),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Text(
+                              checkInDate != null
+                                ? 'Check-In: ${DateFormat('yyyy-MM-dd').format(checkInDate!)}'
+                                : 'Select Check-In Date',
+                              style: TextStyle(color: Colors.black54),
+                            ),
+                          ),
+                        ),  
+                      ),
+                      SizedBox(width: 10),
 
-
-
-// Check-In Date Picker
-Flexible(
-  child: GestureDetector(
-    onTap: () => _selectDate(context, true),
-    child: Container(
-      padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: Text(
-        checkInDate != null
-          ? 'Check-In: ${DateFormat('yyyy-MM-dd').format(checkInDate!)}'
-          : 'Select Check-In Date',
-        style: TextStyle(color: Colors.black54),
-      ),
-    ),
-  ),  
-),
-SizedBox(width: 10),
-
-// Check-Out Date Picker
-Flexible(
-  child: GestureDetector(
-    onTap: () => _selectDate(context, false),
-    child: Container(
-      padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: Text(
-        checkOutDate != null
-          ? 'Check-Out: ${DateFormat('yyyy-MM-dd').format(checkOutDate!)}'
-          : 'Select Check-Out Date',
-        style: TextStyle(color: Colors.black54),
-      ),
-    ),
-  ),
-),
- SizedBox(width: 10),
-
-
+                      // Check-Out Date Picker
+                      Flexible(
+                        child: GestureDetector(
+                          onTap: () => _selectDate(context, false),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Text(
+                              checkOutDate != null
+                                ? 'Check-Out: ${DateFormat('yyyy-MM-dd').format(checkOutDate!)}'
+                                : 'Select Check-Out Date',
+                              style: TextStyle(color: Colors.black54),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 10),
 
                       // Number of guests input
                       Expanded(
@@ -354,18 +348,32 @@ Flexible(
                                           ),
                                         ),
                                         SizedBox(height: 10),
-                                        Center(
-                                          child: ElevatedButton(
-                                            onPressed: () {
-                                              // Booking process navigation
-                                            },
-                                            child: Text('Proceed to Booking'),
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.brown,
-                                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(10),
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          // Example hotel and room data to pass
+                                          String hotelName = "Sample Hotel";
+                                          String hotelAddress = "123 Main St, Cityville";
+                                          String roomType = "Deluxe Room";
+                                          double pricePerGuest = 150.0;
+
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => BookingProcessPage(
+                                                hotelName: hotelName,
+                                                hotelAddress: hotelAddress,
+                                                roomType: roomType,
+                                                pricePerGuest: pricePerGuest,
                                               ),
+                                            ),
+                                          );
+                                        },
+                                          child: Text('Proceed to Booking'),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.brown,
+                                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10),
                                             ),
                                           ),
                                         ),

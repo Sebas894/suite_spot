@@ -175,7 +175,7 @@ class _RatingsPageState extends State<RatingsPage> with SingleTickerProviderStat
                     children: [
                       // Inside the Column widget of the Site Reviews Tab
                       SizedBox(
-                        height: 150, // Reduced height for the review input box
+                        height: 150,
                         child: TextField(
                           controller: siteReviewController,
                           maxLines: null,
@@ -204,7 +204,7 @@ class _RatingsPageState extends State<RatingsPage> with SingleTickerProviderStat
                         ),
                       ),
 
-                      // Display for other 
+                      // Display for other user reviews
                       Expanded(
                         child: ListView(
                           children: [
