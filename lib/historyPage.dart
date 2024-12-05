@@ -1,9 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'homePage.dart';
 
 class BookingHistoryPage extends StatelessWidget {
+  const BookingHistoryPage({super.key});
+
   @override
   Widget build(BuildContext context) {
+    final User? currentUser = FirebaseAuth.instance.currentUser;
+
+    if (currentUser == null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'Suite Spot',
+            style: TextStyle(fontFamily: 'Italiana-Regular', color: Colors.black),
+          ),
+          backgroundColor: Color.fromRGBO(232, 204, 191, 1),
+          elevation: 0,
+        ),
+        body: Center(
+          child: Text('No user is currently logged in.'),
+        ),
+      );
+    }
+
+    final String userId = currentUser.uid;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -44,66 +68,59 @@ class BookingHistoryPage extends StatelessWidget {
                   ),
                 ),
               ),
-              
               SizedBox(height: 20),
               
-              // Booking History Card
-              Center(
-                child: Card(
-                  color: Color.fromRGBO(232, 204, 191, 0.95),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Container(
-                    width: 700, // Fixed width
-                    height: 400, // Fixed height
-                    padding: EdgeInsets.all(20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Reservation Records',
-                          style: TextStyle(
-                            fontFamily: 'Italiana-Regular',
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        Expanded(
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
+              // Booking History Table
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Card(
+                    color: Color.fromRGBO(232, 204, 191, 1), // Light-colored card for better contrast
+                    elevation: 5,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: FutureBuilder<QuerySnapshot>(
+                        future: FirebaseFirestore.instance
+                            .collection('accounts')
+                            .doc(userId)
+                            .collection('reservations')
+                            .get(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return Center(child: CircularProgressIndicator());
+                          }
+                          if (snapshot.hasError) {
+                            return Center(child: Text('Error loading reservations.'));
+                          }
+                          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                            return Center(child: Text('No reservations found.'));
+                          }
+
+                          final reservations = snapshot.data!.docs;
+
+                          return SingleChildScrollView(
                             child: DataTable(
-                              columns: [
+                              columns: const [
                                 DataColumn(label: Text('Reservation ID')),
                                 DataColumn(label: Text('Hotel Name')),
                                 DataColumn(label: Text('Check-In')),
                                 DataColumn(label: Text('Check-Out')),
                                 DataColumn(label: Text('Status')),
                               ],
-                              rows: [
-                                // Placeholder rows
-                                DataRow(cells: [
-                                  DataCell(Text('12345')),
-                                  DataCell(Text('Grand Plaza')),
-                                  DataCell(Text('2024-11-10')),
-                                  DataCell(Text('2024-11-15')),
-                                  DataCell(Text('UPCOMING')),
-                                ]),
-                                DataRow(cells: [
-                                  DataCell(Text('67890')),
-                                  DataCell(Text('Ocean Breeze')),
-                                  DataCell(Text('2024-06-01')),
-                                  DataCell(Text('2024-06-05')),
-                                  DataCell(Text('COMPLETED')),
-                                ]),
-                                // Add more rows as needed
-                              ],
+                              rows: reservations.map((doc) {
+                                final data = doc.data() as Map<String, dynamic>;
+                                return DataRow(cells: [
+                                  DataCell(Text(data['reservationID'] ?? 'N/A')),
+                                  DataCell(Text(data['hotelName'] ?? 'N/A')),
+                                  DataCell(Text(data['checkInDate'] ?? 'N/A')),
+                                  DataCell(Text(data['checkOutDate'] ?? 'N/A')),
+                                  DataCell(Text(data['status'] ?? 'N/A')),
+                                ]);
+                              }).toList(),
                             ),
-                          ),
-                        ),
-                      ],
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ),
@@ -115,3 +132,4 @@ class BookingHistoryPage extends StatelessWidget {
     );
   }
 }
+

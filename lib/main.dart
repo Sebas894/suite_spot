@@ -1,6 +1,7 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import "package:cached_network_image/cached_network_image.dart";
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:suite_spot/homePage.dart';
 
 void main() async {
@@ -33,12 +34,106 @@ class SuiteSpotApp extends StatelessWidget {
 }
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   bool isRegistering = false;
+  bool _isLoading = false;
+
+    // Check for existing user accounts
+    Future<void> _login() async {
+      setState(() {
+        _isLoading = true;
+      });
+
+      try {
+        // Authenticate the user with Firebase Authentication
+        UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
+        );
+
+        // Fetch user details from Firestore
+        DocumentSnapshot userDoc = await _firestore
+            .collection('accounts')
+            .doc(userCredential.user!.uid)
+            .get();
+
+        if (userDoc.exists) {
+          // Retrieve the username from the Firestore document
+          String username = userDoc.get('username');
+
+          // Show a welcome message with the username
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Welcome back, $username!')),
+          );
+          
+          // Navigate to HomePage if login is successful
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => HomePage()),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('User data not found in Firestore!')),
+          );
+        }
+      } on FirebaseAuthException catch (e) {
+        // Handle errors from Firebase Authentication
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message ?? 'An error occurred!')),
+        );
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+
+    // Registering a new user account
+    Future<void> _registerUser(String email, String password, String username, String phoneNum) async {
+      try {
+        // Create user in Firebase Authentication
+        UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+
+        // Get the UID of the newly created user
+        String uid = userCredential.user!.uid;
+
+        // Save user data in Firestore
+        await _firestore.collection('accounts').doc(uid).set({
+          'eMail': email,
+          'password': password,
+          'username': username,
+          'phoneNum': phoneNum,
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Registration successful!')),
+        );
+
+        // Redirect to login page
+        setState(() {
+          isRegistering = false;
+        });
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Registration failed: $e')),
+        );
+      }
+    }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -113,15 +208,17 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
         const SizedBox(height: 20),
-        const TextField(
-          decoration: InputDecoration(
-            labelText: 'Username',
+        TextField(
+          controller: _emailController,
+          decoration: const InputDecoration(
+            labelText: 'E-Mail',
             border: OutlineInputBorder(),
-            prefixIcon: Icon(Icons.person),
+            prefixIcon: Icon(Icons.email),
           ),
         ),
         const SizedBox(height: 20),
-        const TextField(
+        TextField(
+          controller: _passwordController,
           obscureText: true,
           decoration: InputDecoration(
             labelText: 'Password',
@@ -130,23 +227,19 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
         const SizedBox(height: 20),
-        ElevatedButton(
-          onPressed: () {
-            // Add authentication logic here
-            // Assuming the login is successful, navigate to the HomePage
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => HomePage()),
-            );
-          },
-          child: const Text('Login'),
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+        
+        _isLoading
+          ? CircularProgressIndicator()
+          : ElevatedButton(
+            onPressed: _login,
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
+            child: const Text('Login'),
           ),
-        ),
         const SizedBox(height: 10),
         TextButton(
           onPressed: () {
@@ -161,6 +254,11 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _buildRegistrationForm() {
+    final TextEditingController usernameController = TextEditingController();
+    final TextEditingController emailController = TextEditingController();
+    final TextEditingController phoneController = TextEditingController();
+    final TextEditingController passwordController = TextEditingController();
+
     return Column(
       key: const ValueKey('registrationForm'),
       mainAxisSize: MainAxisSize.min,
@@ -175,15 +273,17 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
         const SizedBox(height: 20),
-        const TextField(
-          decoration: InputDecoration(
+        TextField(
+          controller: usernameController,
+          decoration: const InputDecoration(
             labelText: 'Username',
             border: OutlineInputBorder(),
             prefixIcon: Icon(Icons.person),
           ),
         ),
         const SizedBox(height: 20),
-        const TextField(
+        TextField(
+          controller: emailController,
           decoration: InputDecoration(
             labelText: 'Email Address',
             border: OutlineInputBorder(),
@@ -191,7 +291,8 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
         const SizedBox(height: 20),
-        const TextField(
+        TextField(
+          controller: phoneController,
           decoration: InputDecoration(
             labelText: 'Phone Number',
             border: OutlineInputBorder(),
@@ -199,7 +300,8 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
         const SizedBox(height: 20),
-        const TextField(
+        TextField(
+          controller: passwordController,
           obscureText: true,
           decoration: InputDecoration(
             labelText: 'Password',
@@ -208,24 +310,55 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
         const SizedBox(height: 20),
-        ElevatedButton(
-          onPressed: () {
-            // Add logic to send new account details to the database
-            // Assuming the registration is successful, navigate to the HomePage
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => HomePage()),
+        
+        // Register Button
+      ElevatedButton(
+        onPressed: () async {
+          setState(() {
+            _isLoading = true;
+          });
+
+          try {
+            // Call the _registerUser method with form input
+            await _registerUser(
+              emailController.text.trim(),
+              passwordController.text.trim(),
+              usernameController.text.trim(),
+              phoneController.text.trim(),
             );
-          },
-          child: const Text('Register'),
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
+
+            // Show success message
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Registration successful!')),
+            );
+
+            // Redirect to Login page
+            setState(() {
+              isRegistering = false;
+            });
+          } catch (e) {
+            // Show error message
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Registration failed: $e')),
+            );
+          } finally {
+            setState(() {
+              _isLoading = false;
+            });
+          }
+        },
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
           ),
         ),
-        const SizedBox(height: 10),
+        child: _isLoading
+            ? const CircularProgressIndicator(color: Colors.white)
+            : const Text('Register'),
+      ),
+      const SizedBox(height: 10),
+        
         TextButton(
           onPressed: () {
             setState(() {

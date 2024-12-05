@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'homePage.dart';
 
 class RatingsPage extends StatefulWidget {
+  const RatingsPage({super.key});
+
   @override
   _RatingsPageState createState() => _RatingsPageState();
 }
@@ -113,7 +115,6 @@ class _RatingsPageState extends State<RatingsPage> with SingleTickerProviderStat
                           print("Hotel Name: ${hotelNameController.text}");
                           print("Hotel Review: ${hotelReviewController.text}");
                         },
-                        child: Text('Submit Review'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color.fromRGBO(165, 111, 77, 1),
                           padding: EdgeInsets.symmetric(vertical: 15),
@@ -121,6 +122,7 @@ class _RatingsPageState extends State<RatingsPage> with SingleTickerProviderStat
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
+                        child: Text('Submit Review'),
                       ),
 
                       // Display for other user reviews
@@ -194,7 +196,6 @@ class _RatingsPageState extends State<RatingsPage> with SingleTickerProviderStat
                           // TODO: Add logic to submit site review
                           print("Site Review: ${siteReviewController.text}");
                         },
-                        child: Text('Submit Review'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color.fromRGBO(165, 111, 77, 1),
                           padding: EdgeInsets.symmetric(vertical: 15),
@@ -202,6 +203,7 @@ class _RatingsPageState extends State<RatingsPage> with SingleTickerProviderStat
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
+                        child: Text('Submit Review'),
                       ),
 
                       // Display for other user reviews

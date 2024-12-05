@@ -3,9 +3,13 @@ import 'package:intl/intl.dart'; // date formatting
 import 'package:suite_spot/main.dart';
 import 'package:suite_spot/ratingsPage.dart';
 import 'package:suite_spot/historyPage.dart';
-import 'package:suite_spot/searchPage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:suite_spot/searchPage2.dart';
+
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -43,12 +47,27 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void _logout() {
-    // TODO: Add backend logout logic here (Firebase sign-out)
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => LoginPage()),
-    );
+  void _logout() async {
+    try {
+      // Sign out the user
+      await FirebaseAuth.instance.signOut();
+
+      // Show a success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('You have successfully logged out.')),
+      );
+
+      // Navigate back to the login screen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage()), // Replace with your login page widget
+      );
+    } catch (e) {
+      // Show an error message if logout fails
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error during logout: $e')),
+      );
+    }
   }
 
   void _showAboutUsDialog(BuildContext context) {
@@ -98,9 +117,7 @@ class _HomePageState extends State<HomePage> {
                 
                 // Company Description
                 Text(
-                  'Our mission at Suite Spot is to connect travelers with luxury stays across the' + 
-                  'globe, providing unforgettable experiences and exceptional customer service. We' +
-                  'aim to make booking your perfect stay seamless and enjoyable.',
+                  'Our mission at Suite Spot is to connect travelers with luxury stays across the globe, providing unforgettable experiences and exceptional customer service. Weaim to make booking your perfect stay seamless and enjoyable.',
                   style: TextStyle(fontSize: 14, color: Colors.black54),
                   textAlign: TextAlign.justify,
                 ),
@@ -113,11 +130,11 @@ class _HomePageState extends State<HomePage> {
                     onPressed: () {
                       Navigator.of(context).pop(); // Close the dialog
                     },
-                    child: Text('Close'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color.fromRGBO(165, 111, 77, 1),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     ),
+                    child: Text('Close'),
                   ),
                 ),
               ],
@@ -156,7 +173,7 @@ class _HomePageState extends State<HomePage> {
                 MaterialPageRoute(builder: (context) => RatingsPage()),
               );
             },
-            child: Text('Ratings', style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 20, color: Colors.black)),
+            child: Text('Review', style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 20, color: Colors.black)),
           ),
           
           // About Us Button
@@ -324,10 +341,9 @@ class _HomePageState extends State<HomePage> {
                           onPressed: () {
                             Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => SearchResultsPage()),
+                                MaterialPageRoute(builder: (context) => HotelSearchPage()),
                             );
                           },
-                          child: Text('Search Hotels'),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color.fromRGBO(255, 82, 82, 1),
                             padding: EdgeInsets.symmetric(vertical: 15),
@@ -335,6 +351,7 @@ class _HomePageState extends State<HomePage> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
+                          child: Text('Search Hotels'),
                         ),
                       ],
                     ),
