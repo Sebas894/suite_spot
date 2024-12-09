@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:suite_spot/historyPage.dart';
 import 'homePage.dart';
@@ -103,9 +104,12 @@ void _showBookingConfirmationDialog(BuildContext context, String hotelName, doub
             final cvvRegex = RegExp(r"^\d{3}$");
             final expiryDateRegex = RegExp(r"^(0[1-9]|1[0-2])\/\d{2}$");
 
+            String sanitizedPhoneNumber = phoneNumber.replaceAll('-', '');
+            String sanitizedCardNumber = cardNumber.replaceAll('-', '');
+
             if (!emailRegex.hasMatch(email)) return false;
-            if (!phoneRegex.hasMatch(phoneNumber)) return false;
-            if (!cardNumberRegex.hasMatch(cardNumber)) return false;
+            if (!phoneRegex.hasMatch(sanitizedPhoneNumber)) return false;
+            if (!cardNumberRegex.hasMatch(sanitizedCardNumber)) return false;
             if (!cvvRegex.hasMatch(cvv)) return false;
 
             if (!expiryDateRegex.hasMatch(expiryDate)) return false;
@@ -195,6 +199,22 @@ void _showBookingConfirmationDialog(BuildContext context, String hotelName, doub
                         fillColor: Colors.white,
                         filled: true,
                       ),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(10),
+                        TextInputFormatter.withFunction((oldValue, newValue) {
+                          String newText = newValue.text.replaceAll('-', '');
+                          final buffer = StringBuffer();
+                          for (int i = 0; i < newText.length; i++) {
+                            if (i == 3 || i == 6) buffer.write('-');
+                            buffer.write(newText[i]);
+                          }
+                          return TextEditingValue(
+                            text: buffer.toString(),
+                            selection: TextSelection.collapsed(offset: buffer.length),
+                          );
+                        })
+                      ],
                       keyboardType: TextInputType.phone,
                       onChanged: (value) {
                         setState(() {
@@ -216,6 +236,22 @@ void _showBookingConfirmationDialog(BuildContext context, String hotelName, doub
                         filled: true,  
                       ),
                       keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(16),
+                        TextInputFormatter.withFunction((oldValue, newValue) {
+                          String newText = newValue.text.replaceAll('-', '');
+                          final buffer = StringBuffer();
+                          for (int i = 0; i < newText.length; i++) {
+                            if (i > 0 && i % 4 == 0) buffer.write('-');
+                              buffer.write(newText[i]);
+                          }
+                            return TextEditingValue(
+                              text: buffer.toString(),
+                              selection: TextSelection.collapsed(offset: buffer.length),
+                          );
+                        })
+                      ],
                       onChanged: (value) {
                         setState(() {
                           cardNumber = value;
@@ -231,6 +267,22 @@ void _showBookingConfirmationDialog(BuildContext context, String hotelName, doub
                         filled: true,
                       ),
                       keyboardType: TextInputType.datetime,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(4),
+                        TextInputFormatter.withFunction((oldValue, newValue) {
+                          String newText = newValue.text.replaceAll('/', '');
+                          final buffer = StringBuffer();
+                          for (int i = 0; i < newText.length; i++) {
+                            if (i == 2) buffer.write('/');
+                            buffer.write(newText[i]);
+                          }
+                          return TextEditingValue(
+                            text: buffer.toString(),
+                            selection: TextSelection.collapsed(offset: buffer.length),
+                          );
+                        })
+                      ],
                       onChanged: (value) {
                         setState(() {
                           expiryDate = value;
@@ -246,6 +298,10 @@ void _showBookingConfirmationDialog(BuildContext context, String hotelName, doub
                         filled: true,
                       ),
                       keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(3),
+                      ],
                       onChanged: (value) {
                         setState(() {
                           cvv = value;

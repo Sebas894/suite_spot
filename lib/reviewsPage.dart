@@ -42,14 +42,14 @@ class _ReviewsPageState extends State<ReviewsPage> with SingleTickerProviderStat
       body: Container(
         decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('images/homeBG.png'),
+                image: AssetImage('images/reviewsBG.png'),
                 fit: BoxFit.cover,
               ),
             ),
         child: Column(
           children: [
             Container(
-              color: Color.fromRGBO(232, 204, 191, 1), // AppBar color
+              color: Color.fromRGBO(232, 204, 191, 0.85), // AppBar color
               padding: const EdgeInsets.all(16.0),
               child: Row(
                 children: [
@@ -67,7 +67,7 @@ class _ReviewsPageState extends State<ReviewsPage> with SingleTickerProviderStat
               ),
             ),
             Container(
-              color: Color.fromRGBO(165, 111, 77, 1), // TabBar background color
+              color: Color.fromRGBO(165, 111, 77, 0.85), // TabBar background color
               child: TabBar(
                 controller: _tabController,
                 indicatorColor: Colors.white,
@@ -117,7 +117,7 @@ Widget buildReviewTab({required bool isHotelReview}) {
             Container(
               width: 450,
               child: Card(
-                color: Color.fromRGBO(232, 204, 191, 1),
+                color: Color.fromRGBO(232, 204, 191, 0.85),
                 elevation: 4,
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -215,7 +215,7 @@ Widget buildReviewTab({required bool isHotelReview}) {
                     children: snapshot.data!.docs.map((doc) {
                       final data = doc.data() as Map<String, dynamic>;
                       return Card(
-                        color: Color.fromRGBO(232, 204, 191, 1),
+                        color: Color.fromRGBO(232, 204, 191, 0.85),
                         child: ListTile(
                           title: Text('Username: ${data['username']}',
                             style: TextStyle(
