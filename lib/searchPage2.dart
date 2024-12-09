@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:suite_spot/historyPage.dart';
 import 'homePage.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -139,7 +140,7 @@ void _showBookingConfirmationDialog(BuildContext context, String hotelName, doub
                         children: [
                           Text(
                             'Reservation Review',
-                            style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFFA57045)),
+                            style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 25, fontWeight: FontWeight.bold, color: Color(0xFFA57045)),
                           ),
                           IconButton(
                             icon: Icon(Icons.close, color: Color(0xFFA57045)),
@@ -150,8 +151,8 @@ void _showBookingConfirmationDialog(BuildContext context, String hotelName, doub
                         ],
                       ),
                     SizedBox(height: 16),
-                    Text('Hotel Name: $hotelName', style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 18)),
-                    Text('Total Cost: \$${totalCost.toStringAsFixed(2)}', style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 18)),
+                    Text('Hotel Name: $hotelName', style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 20, fontWeight: FontWeight.bold)),
+                    Text('Total Cost: \$${totalCost.toStringAsFixed(2)}', style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 20, fontWeight: FontWeight.bold)),
                     SizedBox(height: 24),
                     Text(
                       'Guest Information',
@@ -159,7 +160,12 @@ void _showBookingConfirmationDialog(BuildContext context, String hotelName, doub
                     ),
                     SizedBox(height: 8),
                     TextField(
-                      decoration: InputDecoration(labelText: 'Full Name'),
+                      decoration: InputDecoration(
+                        labelText: 'Full Name',
+                        prefixIcon: Icon(Icons.person, color: Color(0xFFA57045)),
+                        fillColor: Colors.white,
+                        filled: true,
+                      ),
                       onChanged: (value) {
                         setState(() {
                           fullName = value;
@@ -168,7 +174,12 @@ void _showBookingConfirmationDialog(BuildContext context, String hotelName, doub
                     ),
                     SizedBox(height: 8),
                     TextField(
-                      decoration: InputDecoration(labelText: 'Email'),
+                      decoration: InputDecoration(
+                        labelText: 'Email',
+                        prefixIcon: Icon(Icons.email, color: Color(0xFFA57045)),
+                        fillColor: Colors.white,
+                        filled: true,
+                      ),
                       keyboardType: TextInputType.emailAddress,
                       onChanged: (value) {
                         setState(() {
@@ -178,7 +189,12 @@ void _showBookingConfirmationDialog(BuildContext context, String hotelName, doub
                     ),
                     SizedBox(height: 8),
                     TextField(
-                      decoration: InputDecoration(labelText: 'Phone Number'),
+                      decoration: InputDecoration(
+                        labelText: 'Phone Number',
+                        prefixIcon: Icon(Icons.phone, color: Color(0xFFA57045)),
+                        fillColor: Colors.white,
+                        filled: true,
+                      ),
                       keyboardType: TextInputType.phone,
                       onChanged: (value) {
                         setState(() {
@@ -193,7 +209,12 @@ void _showBookingConfirmationDialog(BuildContext context, String hotelName, doub
                     ),
                     SizedBox(height: 8),
                     TextField(
-                      decoration: InputDecoration(labelText: 'Card Number'),
+                      decoration: InputDecoration(
+                        labelText: 'Card Number',
+                        prefixIcon: Icon(Icons.credit_card, color: Color(0xFFA57045)),
+                        fillColor: Colors.white,
+                        filled: true,  
+                      ),
                       keyboardType: TextInputType.number,
                       onChanged: (value) {
                         setState(() {
@@ -203,7 +224,12 @@ void _showBookingConfirmationDialog(BuildContext context, String hotelName, doub
                     ),
                     SizedBox(height: 8),
                     TextField(
-                      decoration: InputDecoration(labelText: 'Expiry Date (MM/YY)'),
+                      decoration: InputDecoration(
+                        labelText: 'Expiry Date (MM/YY)',
+                        prefixIcon: Icon(Icons.calendar_month, color: Color(0xFFA57045)),
+                        fillColor: Colors.white,
+                        filled: true,
+                      ),
                       keyboardType: TextInputType.datetime,
                       onChanged: (value) {
                         setState(() {
@@ -213,7 +239,12 @@ void _showBookingConfirmationDialog(BuildContext context, String hotelName, doub
                     ),
                     SizedBox(height: 8),
                     TextField(
-                      decoration: InputDecoration(labelText: 'CVV'),
+                      decoration: InputDecoration(
+                        labelText: 'CVV',
+                        prefixIcon: Icon(Icons.lock, color: Color(0xFFA57045)),
+                        fillColor: Colors.white,
+                        filled: true,
+                      ),
                       keyboardType: TextInputType.number,
                       onChanged: (value) {
                         setState(() {
@@ -223,7 +254,12 @@ void _showBookingConfirmationDialog(BuildContext context, String hotelName, doub
                     ),
                     SizedBox(height: 8),
                     TextField(
-                      decoration: InputDecoration(labelText: 'Billing Address'),
+                      decoration: InputDecoration(
+                        labelText: 'Billing Address',
+                        prefixIcon: Icon(Icons.home, color: Color(0xFFA57045)),
+                        fillColor: Colors.white,
+                        filled: true,
+                      ),
                       onChanged: (value) {
                         setState(() {
                           billingAddress = value;
@@ -291,24 +327,46 @@ void _showReservationCompletedDialog(BuildContext context, String hotelName, Str
                   ),
                 ),
                 SizedBox(height: 16),
-                Text('Reservation ID: $reservationID', style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 18)),
+                Text('Reservation ID: $reservationID', style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 18, fontWeight: FontWeight.bold)),
                 SizedBox(height: 16),
-                Text('Hotel Name: $hotelName', style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 18)),
-                Text('Address: $address', style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 18)),
-                Text('Number of Guests: $numberOfGuests', style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 18)),
-                Text('Check-In Date: ${_formatDate(checkInDate!)}', style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 18)),
-                Text('Check-Out Date: ${_formatDate(checkOutDate!)}', style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 18)),
+                Text('Hotel Name: $hotelName', style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 18, fontWeight: FontWeight.bold)),
+                Text('Address: $address', style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 18, fontWeight: FontWeight.bold)),
+                Text('Number of Guests: $numberOfGuests', style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 18, fontWeight: FontWeight.bold)),
+                Text('Check-In Date: ${_formatDate(checkInDate!)}', style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 18, fontWeight: FontWeight.bold)),
+                Text('Check-Out Date: ${_formatDate(checkOutDate!)}', style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 18, fontWeight: FontWeight.bold)),
                 SizedBox(height: 24),
-                Center(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop(); // Close the reservation complete dialog
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Thank you for your reservation!')),
-                      );
-                    },
-                    child: Text('Close'),
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(); // Close the reservation complete dialog
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Thank you for your reservation!')),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFFA57045), // Medium Brown button color
+                        foregroundColor: Colors.white, // White text color
+                      ),
+                      child: Text('Close'),
+                    ),
+                    SizedBox(width: 16),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(); // Close the reservation complete dialog
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => BookingHistoryPage()),
+                        ); // Navigate to Booking History page
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFFA57045), // Medium Brown button color
+                        foregroundColor: Colors.white, // White text color
+                      ),
+                      child: Text('View Booking History'),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -674,20 +732,17 @@ class HotelCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                doc['name'],
-                style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 25, fontWeight: FontWeight.bold, color: isSelected ? Colors.white : Colors.black),
-              ),
+              Text(doc['name'], style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 25, fontWeight: FontWeight.bold, color: isSelected ? Colors.white : Colors.black),),
               SizedBox(height: 8),
-              Text(doc['address'], style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 18, color: isSelected ? Colors.white : Colors.black),),
+              Text(doc['address'], style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 18, fontWeight: FontWeight.bold, color: isSelected ? Colors.white : Colors.black),),
               SizedBox(height: 8),
-              Text('City: ${doc['city']}', style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 18, color: isSelected ? Colors.white : Colors.black),),
+              Text('City: ${doc['city']}', style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 18, fontWeight: FontWeight.bold, color: isSelected ? Colors.white : Colors.black),),
               SizedBox(height: 8),
-              Text('Price: \$${doc['price']} per night', style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 18, color: isSelected ? Colors.white : Colors.black),),
+              Text('Price: \$${doc['price']} per night', style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 18, fontWeight: FontWeight.bold, color: isSelected ? Colors.white : Colors.black),),
               SizedBox(height: 8),
-              Text('Rating: ${doc['rating']}', style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 18, color: isSelected ? Colors.white : Colors.black),),
+              Text('Rating: ${doc['rating']}', style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 18, fontWeight: FontWeight.bold, color: isSelected ? Colors.white : Colors.black),),
               SizedBox(height: 8),
-              Text('Amenities: ${doc['amenities'].join(", ")}', style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 18, color: isSelected ? Colors.white : Colors.black),),
+              Text('Amenities: ${doc['amenities'].join(", ")}', style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 18, fontWeight: FontWeight.bold, color: isSelected ? Colors.white : Colors.black),),
             ],
           ),
         ),

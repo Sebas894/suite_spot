@@ -75,16 +75,16 @@ class BookingHistoryPage extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Card(
-                    color: Color.fromRGBO(232, 204, 191, 1), // Light-colored card for better contrast
+                    color: Color.fromRGBO(232, 204, 191, 0.85), // Light-colored card for better contrast
                     elevation: 5,
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: FutureBuilder<QuerySnapshot>(
-                        future: FirebaseFirestore.instance
+                      child: StreamBuilder<QuerySnapshot>(
+                        stream: FirebaseFirestore.instance
                             .collection('accounts')
                             .doc(userId)
                             .collection('reservations')
-                            .get(),
+                            .snapshots(),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState == ConnectionState.waiting) {
                             return Center(child: CircularProgressIndicator());
@@ -106,16 +106,48 @@ class BookingHistoryPage extends StatelessWidget {
                                 DataColumn(label: Text('Check-In')),
                                 DataColumn(label: Text('Check-Out')),
                                 DataColumn(label: Text('Status')),
+                                DataColumn(label: Text('Actions')),
                               ],
                               rows: reservations.map((doc) {
                                 final data = doc.data() as Map<String, dynamic>;
-                                return DataRow(cells: [
-                                  DataCell(Text(data['reservationID'] ?? 'N/A')),
-                                  DataCell(Text(data['hotelName'] ?? 'N/A')),
-                                  DataCell(Text(data['checkInDate'] ?? 'N/A')),
-                                  DataCell(Text(data['checkOutDate'] ?? 'N/A')),
-                                  DataCell(Text(data['status'] ?? 'N/A')),
-                                ]);
+                                final status = data['status'] ?? 'N/A';
+                                return DataRow(
+                                  cells: [
+                                    DataCell(Text(data['reservationID'] ?? 'N/A')),
+                                    DataCell(Text(data['hotelName'] ?? 'N/A')),
+                                    DataCell(Text(data['checkInDate'] ?? 'N/A')),
+                                    DataCell(Text(data['checkOutDate'] ?? 'N/A')),
+                                    DataCell(Text(status)),
+                                    //DataCell(Text(data['status'] ?? 'N/A')),
+                                    DataCell(
+                                      ElevatedButton(
+                                        onPressed: (status == 'CANCELLED' || status == 'COMPLETE')
+                                            ? null // Disable button for CANCELLED or COMPLETE reservations
+                                            : () {
+                                                _showCancellationDialog(context, userId, doc.id);
+                                              },
+                                        style: ElevatedButton.styleFrom(
+                                          foregroundColor: (status == 'CANCELLED' || status == 'COMPLETE')
+                                              ? Colors.white // White text for disabled
+                                              : Colors.white, // White text for active
+                                          backgroundColor: (status == 'CANCELLED' || status == 'COMPLETE')
+                                              ? Colors.grey // Greyed out for disabled
+                                              : Colors.brown, // White text for active
+                                        ),
+                                        child: Text(
+                                          status == 'CANCELLED' || status == 'COMPLETE'
+                                              ? 'Not Available'
+                                              : 'Cancel',
+                                          style: TextStyle(
+                                            color: (status == 'CANCELLED' || status == 'COMPLETE')
+                                                ? Colors.black // Black text for greyed-out button
+                                                : Colors.white, // White text for active button
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
                               }).toList(),
                             ),
                           );
@@ -131,5 +163,39 @@ class BookingHistoryPage extends StatelessWidget {
       ),
     );
   }
-}
 
+  void _showCancellationDialog(BuildContext context, String userId, String reservationId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Cancel Reservation'),
+          content: Text('Are you sure you want to cancel this reservation?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('No'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                await FirebaseFirestore.instance
+                    .collection('accounts')
+                    .doc(userId)
+                    .collection('reservations')
+                    .doc(reservationId)
+                    .update({'status': 'CANCELLED'});
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Reservation status set to CANCELLED.')),
+                );
+              },
+              child: Text('Yes'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}

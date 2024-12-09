@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // date formatting
 import 'package:suite_spot/main.dart';
-import 'package:suite_spot/ratingsPage.dart';
+import 'package:suite_spot/reviewsPage.dart';
 import 'package:suite_spot/historyPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:suite_spot/searchPage2.dart';
@@ -165,12 +165,12 @@ class _HomePageState extends State<HomePage> {
             child: Text('Booking Status', style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 20, color: Colors.black))
           ),
           
-          // Ratings Buttons
+          // Reviews Button
           TextButton(
               onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => RatingsPage()),
+                MaterialPageRoute(builder: (context) => ReviewsPage()),
               );
             },
             child: Text('Review', style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 20, color: Colors.black)),
