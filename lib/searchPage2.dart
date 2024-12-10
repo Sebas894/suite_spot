@@ -159,6 +159,10 @@ void _showBookingConfirmationDialog(BuildContext context, String hotelName, doub
                     Text('Total Cost: \$${totalCost.toStringAsFixed(2)}', style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 20, fontWeight: FontWeight.bold)),
                     SizedBox(height: 24),
                     Text(
+                      '**All fields must be filled in for both Guest and Payment information',
+                      style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 16, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 0, 0, 0)),
+                    ),
+                    Text(
                       'Guest Information',
                       style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 20, fontWeight: FontWeight.bold),
                     ),

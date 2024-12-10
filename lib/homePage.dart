@@ -173,7 +173,7 @@ class _HomePageState extends State<HomePage> {
                 MaterialPageRoute(builder: (context) => ReviewsPage()),
               );
             },
-            child: Text('Review', style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 20, color: Colors.black)),
+            child: Text('Reviews', style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 20, color: Colors.black)),
           ),
           
           // About Us Button
@@ -251,11 +251,11 @@ class _HomePageState extends State<HomePage> {
                   ConstrainedBox(
                     constraints: BoxConstraints(
                       // Set a fixed width and height for the form
-                      maxWidth: 400,
-                      maxHeight: 350,
+                      maxWidth: 450,
+                      maxHeight: 225,
                     ),
                   child: Container(
-                    padding: EdgeInsets.all(20),
+                    padding: EdgeInsets.all(35),
                     decoration: BoxDecoration(
                       color: Color.fromRGBO(232, 204, 191, 0.75),
                       borderRadius: BorderRadius.circular(10),
@@ -264,77 +264,17 @@ class _HomePageState extends State<HomePage> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
 
-                        // Destination Field
-                        Text('Destination', style: TextStyle(fontWeight: FontWeight.bold)),
-                        TextField(
-                          controller: destinationController,
-                          decoration: InputDecoration(
-                            hintText: 'Enter destination',
-                            border: OutlineInputBorder(borderSide: BorderSide.none),
-                            filled: true,
-                            fillColor: Colors.grey[200],
+                        Text(
+                          'Book your stay now with our quick and easy-to-use search page!',
+                          style: TextStyle(
+                            fontFamily: 'Italiana-Regular',
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
                           ),
+                          textAlign: TextAlign.center,
                         ),
-                        SizedBox(height: 15),
-
-                        // Number of Guests Field
-                        Text('Number of Guests', style: TextStyle(fontWeight: FontWeight.bold)),
-                        TextField(
-                          controller: guestsController,
-                          decoration: InputDecoration(
-                            hintText: 'Enter number of guests',
-                            border: OutlineInputBorder(borderSide: BorderSide.none),
-                            filled: true,
-                            fillColor: Colors.grey[200],
-                          ),
-                          keyboardType: TextInputType.number,
-                        ),
-                        SizedBox(height: 15),
-
-                        // Check-In & Check-Out Date Fields
-                        Text('Check In & Out Dates', style: TextStyle(fontWeight: FontWeight.bold)),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () => _selectDate(context, true),
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey[200],
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  child: Text(
-                                    checkInDate != null
-                                        ? DateFormat('MM/dd/yyyy').format(checkInDate!)
-                                        : 'Check-In Date',
-                                    style: TextStyle(color: Colors.black54),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 10),
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () => _selectDate(context, false),
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey[200],
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  child: Text(
-                                    checkOutDate != null
-                                        ? DateFormat('MM/dd/yyyy').format(checkOutDate!)
-                                        : 'Check-Out Date',
-                                    style: TextStyle(color: Colors.black54),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 20),
+                        Text('',),
 
                         // Search Hotels Button
                         ElevatedButton(
@@ -345,13 +285,17 @@ class _HomePageState extends State<HomePage> {
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color.fromRGBO(255, 82, 82, 1),
-                            padding: EdgeInsets.symmetric(vertical: 15),
+                            backgroundColor: const Color.fromARGB(255, 210, 52, 52),
+                            padding: EdgeInsets.symmetric(vertical: 20),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          child: Text('Search Hotels'),
+                          child:
+                            Text(
+                              'Search For a Hotel',
+                              style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 17, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 255, 255, 255)),
+                          ),
                         ),
                       ],
                     ),
