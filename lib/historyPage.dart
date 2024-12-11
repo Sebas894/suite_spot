@@ -111,6 +111,35 @@ class BookingHistoryPage extends StatelessWidget {
                               rows: reservations.map((doc) {
                                 final data = doc.data() as Map<String, dynamic>;
                                 final status = data['status'] ?? 'N/A';
+                                final checkInDate = DateTime.tryParse(data['checkInDate'] ?? '');
+                                final checkOutDate = DateTime.tryParse(data['checkOutDate'] ?? '');
+
+                                // Automatically update status to ONGOING if within check-in and check-out dates
+                                if (checkInDate != null &&
+                                    checkOutDate != null &&
+                                    DateTime.now().isAfter(checkInDate) &&
+                                    DateTime.now().isBefore(checkOutDate) &&
+                                    status != 'ONGOING') {
+                                  FirebaseFirestore.instance
+                                      .collection('accounts')
+                                      .doc(userId)
+                                      .collection('reservations')
+                                      .doc(doc.id)
+                                      .update({'status': 'ONGOING'});
+                                }
+
+                                // Automatically update status to COMPLETE if check-out date has passed
+                                if (checkOutDate != null &&
+                                    DateTime.now().isAfter(checkOutDate) &&
+                                    status != 'COMPLETE') {
+                                  FirebaseFirestore.instance
+                                      .collection('accounts')
+                                      .doc(userId)
+                                      .collection('reservations')
+                                      .doc(doc.id)
+                                      .update({'status': 'COMPLETE'});
+                                }
+
                                 return DataRow(
                                   cells: [
                                     DataCell(Text(data['reservationID'] ?? 'N/A')),
@@ -118,7 +147,6 @@ class BookingHistoryPage extends StatelessWidget {
                                     DataCell(Text(data['checkInDate'] ?? 'N/A')),
                                     DataCell(Text(data['checkOutDate'] ?? 'N/A')),
                                     DataCell(Text(status)),
-                                    //DataCell(Text(data['status'] ?? 'N/A')),
                                     DataCell(
                                       ElevatedButton(
                                         onPressed: (status == 'CANCELLED' || status == 'COMPLETE')
