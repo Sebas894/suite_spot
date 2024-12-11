@@ -82,9 +82,9 @@ class _HotelSearchPageState extends State<HotelSearchPage> {
       return 0.0;
     }
 
-    int numberOfNights = checkOutDate!.difference(checkInDate!).inDays;
+    double numberOfNights = checkOutDate!.difference(checkInDate!).inDays.toDouble();
     double baseRate = roomType == 'Traditional' ? pricePerNight : pricePerNight * 1.5;
-    double additionalGuestCost = (numberOfGuests.toDouble() - 1) * 20.0;
+    double additionalGuestCost = (numberOfGuests - 1).toDouble() * 20.0;
     double totalCost = (baseRate + additionalGuestCost) * numberOfNights.toDouble();
 
     return totalCost;
@@ -655,8 +655,8 @@ void _saveReservationToFirebase(String currentUserUID, String reservationID, Str
                   }
 
                   var hotelData = snapshot.data!.data() as Map<String, dynamic>;
-                  double pricePerNight = hotelData['price'] ?? 0.0;
-                  double totalCost = calculateTotalCost(pricePerNight);
+                  double pricePerNight = hotelData['price'].toDouble() ?? 0.0;
+                  double totalCost = calculateTotalCost(pricePerNight).toDouble();
 
                   return ListView(
                     children: [
@@ -664,21 +664,21 @@ void _saveReservationToFirebase(String currentUserUID, String reservationID, Str
                         hotelData['name'],
                         style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 24, fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 8),
+                      SizedBox(height: 8.0),
                         Text(hotelData['address'],
                           style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 17, fontWeight: FontWeight.bold),
                         ),
-                      SizedBox(height: 8),
+                      SizedBox(height: 8.0),
                         Text(
                           'Amenities: ${hotelData['amenities'].join(", ")}',
                           style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 17, fontWeight: FontWeight.bold),
                           ),
-                      SizedBox(height: 16),
+                      SizedBox(height: 16.0),
                         Text(
                           'Check-In Date',
                           style: TextStyle(fontFamily: 'Italiana-Regular', fontWeight: FontWeight.bold),
                         ),
-                      SizedBox(height: 8),
+                      SizedBox(height: 8.0),
                       ElevatedButton(
                         onPressed: () => _selectDate(context, true),
                         style: ElevatedButton.styleFrom(
@@ -687,12 +687,12 @@ void _saveReservationToFirebase(String currentUserUID, String reservationID, Str
                         ),
                         child: Text(checkInDate == null ? 'Select Check-In Date' : checkInDate.toString().split(' ')[0]),
                       ),
-                      SizedBox(height: 16),
+                      SizedBox(height: 16.0),
                       Text(
                         'Check-Out Date',
                         style: TextStyle(fontFamily: 'Italiana-Regular', fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 8),
+                      SizedBox(height: 8.0),
                       ElevatedButton(
                         onPressed: () => _selectDate(context, false),
                         style: ElevatedButton.styleFrom(
@@ -701,12 +701,12 @@ void _saveReservationToFirebase(String currentUserUID, String reservationID, Str
                         ),
                         child: Text(checkOutDate == null ? 'Select Check-Out Date' : checkOutDate.toString().split(' ')[0]),
                       ),
-                      SizedBox(height: 16),
+                      SizedBox(height: 16.0),
                       Text(
                         'Room Type',
                         style: TextStyle(fontFamily: 'Italiana-Regular', fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 8),
+                      SizedBox(height: 8.0),
                       DropdownButton<String>(
                         value: roomType,
                         onChanged: (String? newValue) {
@@ -722,12 +722,12 @@ void _saveReservationToFirebase(String currentUserUID, String reservationID, Str
                           );
                         }).toList(),
                       ),
-                      SizedBox(height: 16),
+                      SizedBox(height: 16.0),
                       Text(
                         'Number of Guests',
                         style: TextStyle(fontFamily: 'Italiana-Regular', fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 8),
+                      SizedBox(height: 8.0),
                       StepperControl(
                         currentValue: numberOfGuests,
                         onValueChanged: (value) {
@@ -736,12 +736,12 @@ void _saveReservationToFirebase(String currentUserUID, String reservationID, Str
                           });
                         },
                       ),
-                      SizedBox(height: 16),
+                      SizedBox(height: 16.0),
                       Text(
                         'Total Cost: \$${totalCost.toStringAsFixed(2)}',
                         style: TextStyle(fontFamily: 'Italiana-Regular', fontSize: 18, fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 24),
+                      SizedBox(height: 24.0),
                       ElevatedButton(
                         onPressed: (checkInDate == null || checkOutDate == null)? null : () { _showBookingConfirmationDialog(
                                   context,
