@@ -84,7 +84,7 @@ class _HotelSearchPageState extends State<HotelSearchPage> {
 
     int numberOfNights = checkOutDate!.difference(checkInDate!).inDays;
     double baseRate = roomType == 'Traditional' ? pricePerNight : pricePerNight * 1.5;
-    double additionalGuestCost = (numberOfGuests - 1) * 20.0;
+    double additionalGuestCost = (numberOfGuests.toDouble() - 1) * 20.0;
     double totalCost = (baseRate + additionalGuestCost) * numberOfNights.toDouble();
 
     return totalCost;
