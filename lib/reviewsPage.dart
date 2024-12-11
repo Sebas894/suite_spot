@@ -42,7 +42,7 @@ class _ReviewsPageState extends State<ReviewsPage> with SingleTickerProviderStat
       body: Container(
         decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('images/reviewsBG.png'),
+                image: AssetImage('assets/images/reviewsBG.png'),
                 fit: BoxFit.cover,
               ),
             ),

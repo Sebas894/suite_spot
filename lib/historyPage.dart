@@ -43,7 +43,7 @@ class BookingHistoryPage extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('images/historyBG.png'), // Replace with the path to your background image
+                image: AssetImage('assets/images/historyBG.png'), // Replace with the path to your background image
                 fit: BoxFit.cover,
               ),
             ),
